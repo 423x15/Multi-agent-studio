@@ -10,10 +10,12 @@ const DB_PATH = process.env.SQLITE_PATH || path.join(DATA_DIR, 'studio.db');
 const JS_STORE = path.join(DATA_DIR, 'jetstream');
 
 function findNatsServer() {
-  const local = path.join(ROOT, 'nats-bin', 'nats-server');
+  const isWin = process.platform === 'win32';
+  const local = path.join(ROOT, 'nats-bin', isWin ? 'nats-server.exe' : 'nats-server');
   if (fs.existsSync(local)) return local;
   try {
-    const p = execSync('which nats-server').toString().trim();
+    const cmd = isWin ? 'where nats-server' : 'which nats-server';
+    const p = execSync(cmd).toString().trim().split('\n')[0].trim();
     if (p) return p;
   } catch (_) {}
   return null;
@@ -38,9 +40,10 @@ function waitPort(port, host, timeoutMs) {
 async function startNats() {
   const bin = findNatsServer();
   if (!bin) {
-    throw new Error(
-      'nats-server not found. Install it (brew install nats-server) or drop a binary in nats-bin/.'
-    );
+    const hint = process.platform === 'win32'
+      ? 'Download nats-server.exe from https://github.com/nats-io/nats-server/releases and place it in the nats-bin/ folder.'
+      : 'Install it (brew install nats-server) or drop a binary in nats-bin/.';
+    throw new Error(`nats-server not found. ${hint}`);
   }
   fs.mkdirSync(JS_STORE, { recursive: true });
   console.log(`[bootstrap] starting nats-server: ${bin}`);
@@ -64,11 +67,17 @@ function initDb() {
   console.log(`[bootstrap] SQLite ready: ${DB_PATH}`);
 }
 
+function getPythonCmd() {
+  if (process.platform !== 'win32') return 'python3';
+  try { execSync('python3 --version', { stdio: 'ignore' }); return 'python3'; } catch (_) {}
+  return 'python';
+}
+
 function installPythonDeps() {
   const req = path.join(ROOT, 'requirements.txt');
   if (!fs.existsSync(req)) return;
   console.log('[bootstrap] installing Python deps (pip)...');
-  const r = spawnSync('python3', ['-m', 'pip', 'install', '-q', '-r', req], {
+  const r = spawnSync(getPythonCmd(), ['-m', 'pip', 'install', '-q', '-r', req], {
     stdio: 'inherit',
   });
   if (r.status !== 0) {

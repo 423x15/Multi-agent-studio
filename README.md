@@ -16,14 +16,28 @@ Browser UI ──HTTP/WS──> Express (:3001) ──spawns──> Python daemo
 ## 1. Requirements
 - Node.js 20+
 - Python 3.11+
-- `nats-server` on PATH — `brew install nats-server`
+- `nats-server` on PATH
+
+**macOS:** `brew install nats-server`  
+**Linux:** `apt install nats-server` or download from GitHub releases  
+**Windows:** Download `nats-server.exe` from https://github.com/nats-io/nats-server/releases → extract and either add to PATH **or** place `nats-server.exe` in the `nats-bin/` folder at the root of the project (no PATH change needed).
 
 ## 2. Setup
+
+**macOS / Linux:**
 ```bash
 cp .env.example .env                  # then edit: OPENAI_API_KEY / ANTHROPIC_API_KEY
 npm install
 cd client && npm install && cd ..
 pip install -r requirements.txt       # bootstrap also attempts this
+```
+
+**Windows (PowerShell):**
+```powershell
+copy .env.example .env                # then edit: OPENAI_API_KEY / ANTHROPIC_API_KEY
+npm install
+cd client; npm install; cd ..
+pip install -r requirements.txt
 ```
 
 ## 3. Run
@@ -42,8 +56,16 @@ npm run dev                   # Express proxies Vite
 ```
 
 Stop everything:
+
+**macOS / Linux:**
 ```bash
 lsof -ti:3001 | xargs kill; pkill -f nats-server; pkill -f core/daemon.py
+```
+
+**Windows (PowerShell):**
+```powershell
+Stop-Process -Name nats-server -ErrorAction SilentlyContinue
+Get-Process node | Where-Object { $_.MainWindowTitle -eq '' } | Stop-Process
 ```
 
 Smoke test (no browser):
