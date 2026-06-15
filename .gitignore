@@ -1,0 +1,10 @@
+node_modules/
+client/node_modules/
+client/dist/
+data/*.db
+data/*.db-*
+.env
+nats-bin/
+__pycache__/
+*.pyc
+.DS_Store

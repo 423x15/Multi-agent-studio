@@ -1,0 +1,12 @@
+{
+  "env": {
+    "ECC_GATEGUARD": "off"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "Bash(pip3 --version)",
+      "Bash(nats-server --version)"
+    ]
+  }
+}

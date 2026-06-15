@@ -1,0 +1,16 @@
+id: fact_checker
+name: fact_checker
+type: llm_worker
+description: ''
+subscribes:
+  - agent.researcher.output
+publishes:
+  - agent.fact_checker.output
+fan_in:
+  require_all: false
+timeout_seconds: 60
+llm:
+  provider: openai
+  model: gpt-4o-mini
+  temperature: 0.3
+  system_prompt: Check the facts you receive. Keep the verified ones.

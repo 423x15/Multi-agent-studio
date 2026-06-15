@@ -1,0 +1,15 @@
+id: summarizer
+name: summarizer
+type: llm_worker
+description: ''
+subscribes:
+  - agent.fact_checker.output
+publishes: []
+fan_in:
+  require_all: false
+timeout_seconds: 60
+llm:
+  provider: openai
+  model: gpt-4o-mini
+  temperature: 0.3
+  system_prompt: Summarize the verified facts in 2 sentences.

@@ -1,0 +1,86 @@
+{
+  "id": "a630d926-8c18-419e-bbd6-e0f79804baf3",
+  "name": "e2e-pipeline",
+  "config": {
+    "nodes": [
+      {
+        "id": "researcher",
+        "type": "agent",
+        "position": {
+          "x": 0,
+          "y": 100
+        },
+        "data": {
+          "name": "researcher",
+          "agentType": "llm_worker",
+          "description": "",
+          "timeout_seconds": 60,
+          "fan_in": false,
+          "llm": {
+            "provider": "openai",
+            "model": "gpt-4o-mini",
+            "temperature": 0.3,
+            "system_prompt": "Research the topic. List 3 short facts."
+          },
+          "tools": []
+        }
+      },
+      {
+        "id": "fact_checker",
+        "type": "agent",
+        "position": {
+          "x": 300,
+          "y": 100
+        },
+        "data": {
+          "name": "fact_checker",
+          "agentType": "llm_worker",
+          "description": "",
+          "timeout_seconds": 60,
+          "fan_in": false,
+          "llm": {
+            "provider": "openai",
+            "model": "gpt-4o-mini",
+            "temperature": 0.3,
+            "system_prompt": "Check the facts you receive. Keep the verified ones."
+          },
+          "tools": []
+        }
+      },
+      {
+        "id": "summarizer",
+        "type": "agent",
+        "position": {
+          "x": 600,
+          "y": 100
+        },
+        "data": {
+          "name": "summarizer",
+          "agentType": "llm_worker",
+          "description": "",
+          "timeout_seconds": 60,
+          "fan_in": false,
+          "llm": {
+            "provider": "openai",
+            "model": "gpt-4o-mini",
+            "temperature": 0.3,
+            "system_prompt": "Summarize the verified facts in 2 sentences."
+          },
+          "tools": []
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source": "researcher",
+        "target": "fact_checker"
+      },
+      {
+        "id": "e2",
+        "source": "fact_checker",
+        "target": "summarizer"
+      }
+    ]
+  }
+}

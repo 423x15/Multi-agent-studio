@@ -1,0 +1,1 @@
+{"Created":"2026-06-15T06:26:53.979824Z","Name":"2OouoCr8","name":"2OouoCr8","deliver_policy":"new","ack_policy":"none","ack_wait":30000000000,"max_deliver":-1,"filter_subject":"agent.\u003e","replay_policy":"instant","deliver_subject":"_INBOX.XARTQY73K2QE0ZR1F20ARI","num_replicas":0,"metadata":{"_nats.req.level":"0"}}

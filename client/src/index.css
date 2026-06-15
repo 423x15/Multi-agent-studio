@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; margin: 0; }
+body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+.react-flow__edge.active path { stroke: #f97316 !important; stroke-width: 3; }
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(249,115,22,.6);} 70%{box-shadow:0 0 0 10px rgba(249,115,22,0);} 100%{box-shadow:0 0 0 0 rgba(249,115,22,0);} }
+.node-active { animation: pulse-ring 1s ease-out; }

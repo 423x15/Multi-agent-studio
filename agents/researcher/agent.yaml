@@ -1,0 +1,16 @@
+id: researcher
+name: researcher
+type: llm_worker
+description: ''
+subscribes:
+  - agent.researcher.input
+publishes:
+  - agent.researcher.output
+fan_in:
+  require_all: false
+timeout_seconds: 60
+llm:
+  provider: openai
+  model: gpt-4o-mini
+  temperature: 0.3
+  system_prompt: Research the topic. List 3 short facts.

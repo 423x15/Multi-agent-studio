@@ -1,0 +1,120 @@
+{
+  "id": "0796a5cb-4e4e-40cc-809b-3338e88010a5",
+  "name": "e2e-pipeline",
+  "config": {
+    "nodes": [
+      {
+        "id": "researcher",
+        "type": "agent",
+        "position": {
+          "x": 0,
+          "y": 100
+        },
+        "data": {
+          "name": "researcher",
+          "agentType": "llm_worker",
+          "description": "",
+          "timeout_seconds": 60,
+          "fan_in": false,
+          "llm": {
+            "provider": "openai",
+            "model": "gpt-4o-mini",
+            "temperature": 0.3,
+            "system_prompt": "Research the topic. List 3 short facts."
+          },
+          "tools": []
+        },
+        "width": 160,
+        "height": 67,
+        "selected": false,
+        "dragging": false
+      },
+      {
+        "id": "fact_checker",
+        "type": "agent",
+        "position": {
+          "x": 300,
+          "y": 100
+        },
+        "data": {
+          "name": "fact_checker",
+          "agentType": "llm_worker",
+          "description": "",
+          "timeout_seconds": 60,
+          "fan_in": false,
+          "llm": {
+            "provider": "openai",
+            "model": "gpt-4o-mini",
+            "temperature": 0.3,
+            "system_prompt": "Check the facts you receive. Keep the verified ones."
+          },
+          "tools": []
+        },
+        "width": 160,
+        "height": 67,
+        "selected": true,
+        "dragging": false
+      },
+      {
+        "id": "summarizer",
+        "type": "agent",
+        "position": {
+          "x": 600,
+          "y": 100
+        },
+        "data": {
+          "name": "summarizer",
+          "agentType": "llm_worker",
+          "description": "",
+          "timeout_seconds": 60,
+          "fan_in": false,
+          "llm": {
+            "provider": "openai",
+            "model": "gpt-4o-mini",
+            "temperature": 0.3,
+            "system_prompt": "Summarize the verified facts in 2 sentences."
+          },
+          "tools": []
+        },
+        "width": 160,
+        "height": 67
+      },
+      {
+        "id": "langgraph_frt6n",
+        "type": "agent",
+        "position": {
+          "x": 121.57432432432431,
+          "y": -55.729729729729755
+        },
+        "data": {
+          "name": "langgraph_frt6n",
+          "agentType": "langgraph",
+          "description": "",
+          "timeout_seconds": 120,
+          "fan_in": false,
+          "llm": {
+            "provider": "openai",
+            "model": "gpt-4o",
+            "temperature": 0.7,
+            "system_prompt": "You are a helpful assistant."
+          },
+          "tools": []
+        },
+        "width": 163,
+        "height": 67
+      }
+    ],
+    "edges": [
+      {
+        "id": "e1",
+        "source": "researcher",
+        "target": "fact_checker"
+      },
+      {
+        "id": "e2",
+        "source": "fact_checker",
+        "target": "summarizer"
+      }
+    ]
+  }
+}

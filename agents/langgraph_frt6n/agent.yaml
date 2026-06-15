@@ -1,0 +1,16 @@
+id: langgraph_frt6n
+name: langgraph_frt6n
+type: langgraph
+description: ''
+subscribes:
+  - agent.langgraph_frt6n.input
+publishes: []
+fan_in:
+  require_all: false
+timeout_seconds: 120
+llm:
+  provider: openai
+  model: gpt-4o
+  temperature: 0.7
+  system_prompt: You are a helpful assistant.
+tools: []
