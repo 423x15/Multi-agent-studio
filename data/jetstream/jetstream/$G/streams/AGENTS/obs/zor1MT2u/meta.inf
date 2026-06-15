@@ -1,0 +1,1 @@
+{"Created":"2026-06-15T06:31:35.673857Z","Name":"zor1MT2u","name":"zor1MT2u","deliver_policy":"new","ack_policy":"none","ack_wait":30000000000,"max_deliver":-1,"filter_subject":"agent.\u003e","replay_policy":"instant","deliver_subject":"_INBOX.DRA5U7NNVWNGIPFUFN284U","num_replicas":0,"metadata":{"_nats.req.level":"0"}}
