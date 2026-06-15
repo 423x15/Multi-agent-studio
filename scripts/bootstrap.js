@@ -58,7 +58,7 @@ async function startNats() {
 
 function initDb() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
-  const Database = require('better-sqlite3');
+  const Database = require('../server/sqlite-compat');
   const db = new Database(DB_PATH);
   db.pragma('journal_mode = WAL');
   const schema = fs.readFileSync(path.join(ROOT, 'server', 'schema.sql'), 'utf8');

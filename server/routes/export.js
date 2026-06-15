@@ -12,7 +12,7 @@ const MINIMAL_PKG = {
   version: '1.0.0',
   scripts: { start: 'node scripts/start-all.js' },
   dependencies: {
-    express: '^4.18.0', ws: '^8.16.0', 'better-sqlite3': '^11.8.0',
+    express: '^4.18.0', ws: '^8.16.0', 'node-sqlite3-wasm': '^0.8.0',
     nats: '^2.28.0', uuid: '^9.0.0', 'http-proxy-middleware': '^3.0.0',
     'js-yaml': '^4.1.0', archiver: '^7.0.0',
   },
