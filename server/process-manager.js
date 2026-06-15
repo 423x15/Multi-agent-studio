@@ -1,15 +1,21 @@
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 const path = require('path');
 const { broadcast } = require('./ws-broadcaster');
 
 const ROOT = path.join(__dirname, '..');
+
+const PYTHON_CMD = (() => {
+  if (process.platform !== 'win32') return 'python3';
+  try { execSync('python3 --version', { stdio: 'ignore' }); return 'python3'; } catch (_) {}
+  return 'python';
+})();
 const processes = new Map(); // agentId -> ChildProcess
 
 function startAgent(agentId, agentPath, systemId) {
   if (processes.has(agentId)) return;
   const abs = path.isAbsolute(agentPath) ? agentPath : path.join(ROOT, agentPath);
 
-  const proc = spawn('python3', [path.join(ROOT, 'core', 'daemon.py'), '--agent', abs], {
+  const proc = spawn(PYTHON_CMD, [path.join(ROOT, 'core', 'daemon.py'), '--agent', abs], {
     cwd: ROOT,
     env: {
       ...process.env,
