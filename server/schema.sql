@@ -45,6 +45,16 @@ CREATE TABLE IF NOT EXISTS agent_logs (
   ts        DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS test_cases (
+  id         TEXT PRIMARY KEY,
+  system_id  TEXT REFERENCES systems(id) ON DELETE CASCADE,
+  name       TEXT NOT NULL,
+  input      TEXT NOT NULL,
+  expected   TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE INDEX IF NOT EXISTS idx_events_run ON events(run_id);
 CREATE INDEX IF NOT EXISTS idx_logs_run ON agent_logs(run_id);
 CREATE INDEX IF NOT EXISTS idx_agents_system ON agents(system_id);
+CREATE INDEX IF NOT EXISTS idx_tests_system ON test_cases(system_id);

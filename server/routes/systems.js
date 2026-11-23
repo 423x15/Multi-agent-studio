@@ -79,10 +79,26 @@ router.post('/:id/start', (req, res) => {
   if (!row) return res.status(404).json({ error: 'not found' });
   const config = JSON.parse(row.config);
   compileSystem(config);
+
+  // Identify sub-agents (workers called directly by an orchestrator — no daemon needed)
+  const subagentIds = new Set();
   for (const node of config.nodes || []) {
-    pm.startAgent(node.id, path.join('agents', node.id), row.id);
+    if ((node.data && node.data.agentType) === 'orchestrator') {
+      for (const e of config.edges || []) {
+        if (e.source === node.id) subagentIds.add(e.target);
+      }
+    }
   }
-  res.json({ ok: true, started: (config.nodes || []).map((n) => n.id) });
+
+  const started = [];
+  for (const node of config.nodes || []) {
+    const type = node.data && node.data.agentType;
+    if (type === 'user') continue;          // purely visual
+    if (subagentIds.has(node.id)) continue; // called directly by orchestrator
+    pm.startAgent(node.id, path.join('agents', node.id), row.id);
+    started.push(node.id);
+  }
+  res.json({ ok: true, started });
 });
 
 router.post('/:id/stop', (req, res) => {

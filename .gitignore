@@ -12,3 +12,18 @@ __pycache__/
 # runtime state — not source
 data/jetstream/
 systems/*.json
+
+# user-generated agent instances (auto-created by the UI; only agents/researcher/ is committed as reference)
+agents/critic/
+agents/director/
+agents/financial/
+agents/langgraph_*/
+agents/llm_worker_*/
+agents/manager/
+agents/market/
+agents/python_*/
+agents/risk/
+agents/writer/
+
+# user-created tools (generated at runtime)
+tools/*.py

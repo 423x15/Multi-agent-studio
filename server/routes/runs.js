@@ -12,7 +12,8 @@ router.post('/', async (req, res) => {
   const row = q.getSystem.get(system_id);
   if (!row) return res.status(404).json({ error: 'system not found' });
   const config = JSON.parse(row.config);
-  const nodes = config.nodes || [];
+  // User nodes are purely visual — filter before topology computation
+  const nodes = (config.nodes || []).filter((n) => (n.data && n.data.agentType) !== 'user');
   const edges = config.edges || [];
   if (!nodes.length) return res.status(400).json({ error: 'empty system' });
 
@@ -48,12 +49,27 @@ router.get('/:systemId/list', (req, res) => {
   res.json(q.listRuns.all(req.params.systemId));
 });
 
+router.get('/:systemId/stats', (req, res) => {
+  const { systemId } = req.params;
+  const summary = q.runSummary.get(systemId);
+  const { count: errors } = q.errorCount.get(systemId);
+  const recentRuns = q.recentRuns.all(systemId);
+  const agentActivity = q.agentActivity.all(systemId);
+  res.json({ summary: { ...summary, errors }, recentRuns, agentActivity });
+});
+
 router.get('/:runId/events', (req, res) => {
   res.json(q.eventsByRun.all(req.params.runId));
 });
 
 router.get('/:runId/logs', (req, res) => {
   res.json(q.logsByRun.all(req.params.runId));
+});
+
+router.get('/run/:runId', (req, res) => {
+  const run = q.getRun.get(req.params.runId);
+  if (!run) return res.status(404).json({ error: 'not found' });
+  res.json(run);
 });
 
 router.put('/:runId/complete', (req, res) => {

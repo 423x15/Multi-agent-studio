@@ -1,5 +1,6 @@
 from openai import AsyncOpenAI
 from anthropic import AsyncAnthropic
+from mistralai.client import Mistral
 
 
 async def handle(input_text: str, context: dict) -> str:
@@ -19,6 +20,18 @@ async def handle(input_text: str, context: dict) -> str:
             messages=[{"role": "user", "content": input_text}],
         )
         return resp.content[0].text
+
+    if provider == "mistral":
+        client = Mistral()
+        resp = await client.chat.complete_async(
+            model=model,
+            temperature=temperature,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": input_text},
+            ],
+        )
+        return resp.choices[0].message.content
 
     client = AsyncOpenAI()
     resp = await client.chat.completions.create(

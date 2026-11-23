@@ -41,6 +41,44 @@ const q = {
   // events / logs
   eventsByRun: db.prepare('SELECT * FROM events WHERE run_id = ? ORDER BY id ASC'),
   logsByRun: db.prepare('SELECT * FROM agent_logs WHERE run_id = ? ORDER BY id ASC'),
+
+  // single run
+  getRun: db.prepare('SELECT * FROM runs WHERE id = ?'),
+
+  // test cases
+  listTests:   db.prepare('SELECT * FROM test_cases WHERE system_id = ? ORDER BY created_at ASC'),
+  insertTest:  db.prepare('INSERT INTO test_cases (id, system_id, name, input, expected) VALUES (?, ?, ?, ?, ?)'),
+  deleteTest:  db.prepare('DELETE FROM test_cases WHERE id = ?'),
+
+  // stats
+  runSummary: db.prepare(`
+    SELECT
+      COUNT(*) as total,
+      SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as success,
+      SUM(CASE WHEN status = 'failed'    THEN 1 ELSE 0 END) as failed,
+      SUM(CASE WHEN status = 'running'   THEN 1 ELSE 0 END) as running,
+      ROUND(AVG(CASE WHEN status = 'completed' AND completed_at IS NOT NULL
+        THEN (JULIANDAY(completed_at) - JULIANDAY(started_at)) * 86400000
+        ELSE NULL END)) as avg_duration_ms
+    FROM runs WHERE system_id = ?`),
+
+  errorCount: db.prepare(`
+    SELECT COUNT(*) as count FROM agent_logs
+    WHERE level = 'error'
+      AND run_id IN (SELECT id FROM runs WHERE system_id = ?)`),
+
+  recentRuns: db.prepare(`
+    SELECT id, status, input, started_at, completed_at,
+      ROUND((JULIANDAY(completed_at) - JULIANDAY(started_at)) * 86400000) as duration_ms
+    FROM runs WHERE system_id = ?
+    ORDER BY started_at DESC LIMIT 15`),
+
+  agentActivity: db.prepare(`
+    SELECT from_agent, COUNT(*) as msg_count
+    FROM events
+    WHERE from_agent != '__user__'
+      AND run_id IN (SELECT id FROM runs WHERE system_id = ?)
+    GROUP BY from_agent ORDER BY msg_count DESC`),
 };
 
 module.exports = { db, q };

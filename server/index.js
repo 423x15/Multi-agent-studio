@@ -20,6 +20,8 @@ app.use('/api/systems', require('./routes/systems'));
 app.use('/api/agents', require('./routes/agents'));
 app.use('/api/runs', require('./routes/runs'));
 app.use('/api/export', require('./routes/export'));
+app.use('/api/tests', require('./routes/tests'));
+app.use('/api/tools', require('./routes/tools'));
 
 // Frontend
 if (DEV) {

@@ -82,6 +82,64 @@ export const useStudio = create((set, get) => ({
     get().save();
   },
 
+  loadExample: async () => {
+    const node = (id, agentType, name, x, y, extra = {}) => ({   // company analysis pipeline
+      id,
+      type: 'agent',
+      position: { x, y },
+      data: {
+        name,
+        agentType,
+        description: '',
+        timeout_seconds: 120,
+        fan_in: false,
+        llm: { provider: 'openai', model: 'gpt-4o-mini', temperature: 0.7, system_prompt: 'You are a helpful assistant.' },
+        tools: [],
+        ...extra,
+      },
+    });
+
+    const nodes = [
+      node('user', 'user', 'You', 60, 250),
+      node('director', 'orchestrator', 'Research Director', 300, 250, {
+        llm: {
+          provider: 'openai', model: 'gpt-4o', temperature: 0.4,
+          system_prompt: 'You are a research director. You receive a company name and parallel reports from your team of analysts. Synthesize their insights into a clear, structured company analysis: executive summary, business model, key risks, and market position. Be concise and direct.',
+        },
+      }),
+      node('financial', 'llm_worker', 'Financial Analyst', 600, 80, {
+        llm: {
+          provider: 'openai', model: 'gpt-4o-mini', temperature: 0.4,
+          system_prompt: 'You are a financial analyst. Given a company name, analyze its business model and revenue streams in 3-4 bullet points. Focus on what makes it financially strong or vulnerable. Be specific, under 150 words.',
+        },
+      }),
+      node('risk', 'llm_worker', 'Risk Analyst', 600, 250, {
+        llm: {
+          provider: 'openai', model: 'gpt-4o-mini', temperature: 0.4,
+          system_prompt: 'You are a risk analyst. Given a company name, identify the top 3 risks: competitive threats, market risks, and operational vulnerabilities. Each in one sentence. Under 100 words.',
+        },
+      }),
+      node('market', 'llm_worker', 'Market Analyst', 600, 420, {
+        llm: {
+          provider: 'openai', model: 'gpt-4o-mini', temperature: 0.4,
+          system_prompt: 'You are a market analyst. Given a company name, describe its market position, main competitors, and one key growth opportunity. Under 120 words.',
+        },
+      }),
+    ];
+
+    const edges = [
+      { id: 'e1', source: 'user',      target: 'director'  },
+      { id: 'e2', source: 'director',  target: 'financial' },
+      { id: 'e3', source: 'director',  target: 'risk'      },
+      { id: 'e4', source: 'director',  target: 'market'    },
+    ];
+
+    const sys = await jsend('POST', '/systems', { name: 'Company Analysis (example)' });
+    await jsend('PATCH', `/systems/${sys.id}`, { config: { nodes, edges } });
+    await get().loadSystems();
+    get().openSystem(sys.id);
+  },
+
   selectNode: (id) => set({ selectedNodeId: id }),
 
   updateNodeData: (id, patch) => {

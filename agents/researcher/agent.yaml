@@ -1,16 +1,17 @@
 id: researcher
-name: researcher
+name: Researcher
 type: llm_worker
 description: ''
-subscribes:
-  - agent.researcher.input
-publishes:
-  - agent.researcher.output
+subscribes: []
+publishes: []
 fan_in:
   require_all: false
-timeout_seconds: 60
+timeout_seconds: 120
+subagent: true
 llm:
   provider: openai
   model: gpt-4o-mini
-  temperature: 0.3
-  system_prompt: Research the topic. List 3 short facts.
+  temperature: 0.6
+  system_prompt: >-
+    You are a researcher. Given a question, provide factual, well-structured
+    findings in 3-4 paragraphs.
