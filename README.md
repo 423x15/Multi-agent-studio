@@ -2,8 +2,6 @@
 
 > A local no-code environment for building, running, and monitoring multi-agent AI pipelines.
 
-**→ [Watch the demo on YouTube](#)** *(link coming soon)*
-
 ---
 
 ## What it is
